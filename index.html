@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather API</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poopins&display=swap">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&family=Open+Sans:ital,wght@0,300..800;1,300..800&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="api.css">
+</head>
+<body>
+    <div class="container">
+        
+        <div class="card">
+            
+            <input type="search" id="search-input" name="query" placeholder="Search city name" />
+            <button type="submit" class="search-button">Search</button>
+           
+            <h2><i class="fa fa-map-marker"></i><span id="location"></span></h2>
+            <h6 id="Weather"></h6>
+            <h4><span id="temp"></span><sup>o</sup>C</h4>
+            <img src=""  id="icon">
+            <button onclick="window.location.reload()" class="refresh"><i class="fa fa-refresh"></i></button>
+        </div>
+    </div>
+</body>
+<script
+  src="https://code.jquery.com/jquery-3.4.0.slim.min.js"
+  integrity="sha256-ZaXnYkHGqIhqTbJ6MB4l9Frs/r7U4jlx7ir8PJYBqbI="
+  crossorigin="anonymous"></script>
+<script>
+    var apiKey = "57aa0c18c065af4aa5b27f5ebe71998a"; 
+
+    $(".search-button").click(function(){
+       
+        var city = $("#search-input").val();
+        
+        
+        if(city === "") {
+            alert("Please enter a city name");
+            return;
+        }
+
+        console.log("Searching for:", city);
+        
+        var link = "https://api.openweathermap.org/data/2.5/weather?q=" + city + "&appid=" + apiKey;
+    var request = new XMLHttpRequest();
+    request.open('GET', link, true);
+
+    request.onload = function() {
+        
+        if (request.status >= 200 && request.status < 400) {
+            
+            var obj = JSON.parse(this.response);
+            console.log(obj);
+
+            
+            document.getElementById('Weather').innerHTML = obj.weather[0].description;
+            document.getElementById('location').innerHTML = obj.name;
+            
+            document.getElementById('temp').innerHTML = Math.round(obj.main.temp - 273.15);
+            
+            document.getElementById('icon').src = "https://openweathermap.org/img/w/" + obj.weather[0].icon + ".png";
+            
+        } else {
+            console.log("The city data is not available");
+        }
+    } 
+    
+
+    request.send();
+});
+</script>
+
+</html>
